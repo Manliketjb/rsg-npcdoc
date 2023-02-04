@@ -8,5 +8,6 @@ client_scripts {
 }
 
 dependencies {
-    'rsg-core'
+    'rsg-core',
+    'rsg-medic'
 }
