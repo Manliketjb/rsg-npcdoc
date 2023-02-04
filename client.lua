@@ -9,26 +9,25 @@ local function modelrequest(model)
 end
 
 local function GetTreatedDead()
-	RSGCore.Functions.GetPlayerData(function(PlayerData)
-		if PlayerData.metadata["isdead"] or PlayerData.metadata["inlaststand"] then
-			RSGCore.Functions.Progressbar("progressbar", 'Getting Treated', Config.ProgressTime, false, false, {
-				disableMovement = true,
-				disableCarMovement = true,
-				disableMouse = true,
-				disableCombat = true,
-			}, {}, {}, {}, function()
-				------ [[ Add custom revive or change event name to your medic revive event name ]] ------
-				TriggerEvent('rsg-medic:clent:playerRevive')
-				RSGCore.Functions.Notify('Healthy Again', 'success')
-			end)
-		else
-			RSGCore.Functions.Notify('You don\'t need treatment', 'error')
-		end
-	end)
+	local PlayerData = RSGCore.Functions.GetPlayerData()
+	if PlayerData.metadata["isdead"] or PlayerData.metadata["inlaststand"] then
+		RSGCore.Functions.Progressbar("progressbar", 'Getting Treated', Config.ProgressTime, true, false, {
+			disableMovement = true,
+			disableCarMovement = true,
+			disableMouse = true,
+			disableCombat = true,
+		}, {}, {}, {}, function()
+			------ [[ Add custom revive or change event name to your medic revive event name ]] ------
+			TriggerEvent('rsg-medic:clent:playerRevive')
+			RSGCore.Functions.Notify('Healthy Again', 'success')
+		end)
+	else
+		RSGCore.Functions.Notify('You don\'t need treatment', 'error')
+	end
 end
 
 local function GetTreatedNormal()
-	RSGCore.Functions.Progressbar("progressbar", 'Getting Treated', Config.ProgressTime, false, false, {
+	RSGCore.Functions.Progressbar("progressbar", 'Getting Treated', Config.ProgressTime, true, false, {
 		disableMovement = true,
 		disableCarMovement = true,
 		disableMouse = true,
@@ -84,6 +83,7 @@ Citizen.CreateThread(function()
 				NetworkRegisterEntityAsNetworked(doctors)
 			end
 			Citizen.InvokeNative(0x283978A15512B2FE, doctors, true) -- SetRandomOutfitVariation
+			FreezeEntityPosition(doctors, true)
 		end
 
 		exports['rsg-core']:createPrompt(v.prompt, vector3(v.coords.x,v.coords.y,v.coords.z), RSGCore.Shared.Keybinds['J'], 'Get Treated', {
