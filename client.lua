@@ -86,11 +86,32 @@ Citizen.CreateThread(function()
 			FreezeEntityPosition(doctors, true)
 		end
 
-		exports['rsg-core']:createPrompt(v.prompt, vector3(v.coords.x,v.coords.y,v.coords.z), RSGCore.Shared.Keybinds['J'], 'Get Treated', {
-			type = 'client',
-            event = 'rsg-npcdoc:client:startTreatmentCheck',
-			args = {},
-		})
+		if Config.Target then
+			exports['rsg-target']:AddBoxZone(v.name, vector3(v.coords.x, v.coords.y, v.coords.z), 1.5, 1.5, {
+				name = v.name,
+				heading = v.coords.w,
+				debugPoly = Config.Debug,
+				minZ = v.coords.z - 1,
+				maxZ = v.coords.z + 1,
+				}, {
+					options = {
+						{
+							type = "client",
+							event = "rsg-npcdoc:client:startTreatmentCheck",
+							icon = "fas fa-hospital",
+							label = "Get treated",
+						   
+						},
+					},
+					distance = 4.00
+			})
+		else
+			exports['rsg-core']:createPrompt(v.name, vector3(v.coords.x,v.coords.y,v.coords.z), RSGCore.Shared.Keybinds['J'], 'Get Treated', {
+				type = 'client',
+				event = 'rsg-npcdoc:client:startTreatmentCheck',
+				args = {},
+			})
+		end
     end
 end)
 
