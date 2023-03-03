@@ -15,6 +15,12 @@ Config.JobDutyCheck = false
 Config.MinMedics = 2
 Config.ProgressTime = 5000
 
+Config.Extras = {
+    PayForTreatment = true,
+    TreatmentCost = 50,
+    TreatmentPayType = 'cash'
+}
+
 Config.Locations = {
     {
         name = 'Valentine Doctor', 

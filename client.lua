@@ -9,8 +9,66 @@ local function modelrequest(model)
 end
 
 local function GetTreatedDead()
-	local PlayerData = RSGCore.Functions.GetPlayerData()
-	if PlayerData.metadata["isdead"] or PlayerData.metadata["inlaststand"] then
+    local PlayerData = RSGCore.Functions.GetPlayerData()
+    if Config.Extras.PayForTreatment then
+        if PlayerData.metadata["isdead"] or PlayerData.metadata["inlaststand"] then
+            RSGCore.Functions.TriggerCallback('rsg-medic:server:payFortreatment', function(payed)
+                if payed then
+                    RSGCore.Functions.Progressbar("progressbar", 'Getting Treated', Config.ProgressTime, true, false, {
+                        disableMovement = true,
+                        disableCarMovement = true,
+                        disableMouse = true,
+                        disableCombat = true
+                    }, {}, {}, {}, function()
+                        ------ [[ Add custom revive or change event name to your medic revive event name ]] ------
+                        TriggerEvent('rsg-medic:clent:playerRevive')
+                        RSGCore.Functions.Notify('Healthy Again', 'success')
+                    end)
+                else
+                    RSGCore.Functions.Notify('Not Enough Money', 'error', 7500)
+                end
+            end, Config.Extras.TreatmentCost, Config.Extras.TreatmentPayType)
+        else
+            RSGCore.Functions.Notify('You don\'t need treatment', 'error')
+        end
+    else
+        if PlayerData.metadata["isdead"] or PlayerData.metadata["inlaststand"] then
+            RSGCore.Functions.Progressbar("progressbar", 'Getting Treated', Config.ProgressTime, true, false, {
+                disableMovement = true,
+                disableCarMovement = true,
+                disableMouse = true,
+                disableCombat = true
+            }, {}, {}, {}, function()
+                ------ [[ Add custom revive or change event name to your medic revive event name ]] ------
+                TriggerEvent('rsg-medic:clent:playerRevive')
+                RSGCore.Functions.Notify('Healthy Again', 'success')
+            end)
+        else
+            RSGCore.Functions.Notify('You don\'t need treatment', 'error')
+        end
+    end
+end
+
+
+local function GetTreatedNormal()
+	if Config.Extras.PayForTreatment then
+		RSGCore.Functions.TriggerCallback('rsg-medic:server:payFortreatment', function(payed)
+			if payed then
+				RSGCore.Functions.Progressbar("progressbar", 'Getting Treated', Config.ProgressTime, true, false, {
+					disableMovement = true,
+					disableCarMovement = true,
+					disableMouse = true,
+					disableCombat = true,
+				}, {}, {}, {}, function()
+					------ [[ Add custom revive or change event name to your medic revive event name ]] ------
+					TriggerEvent('rsg-medic:clent:playerRevive')
+					RSGCore.Functions.Notify('Healthy Again', 'success')
+				end)
+			else
+				RSGCore.Functions.Notify('Not Enough Money', 'error', 7500)
+			end
+		end, Config.Extras.TreatmentCost, Config.Extras.TreatmentPayType)
+	else
 		RSGCore.Functions.Progressbar("progressbar", 'Getting Treated', Config.ProgressTime, true, false, {
 			disableMovement = true,
 			disableCarMovement = true,
@@ -21,22 +79,7 @@ local function GetTreatedDead()
 			TriggerEvent('rsg-medic:clent:playerRevive')
 			RSGCore.Functions.Notify('Healthy Again', 'success')
 		end)
-	else
-		RSGCore.Functions.Notify('You don\'t need treatment', 'error')
 	end
-end
-
-local function GetTreatedNormal()
-	RSGCore.Functions.Progressbar("progressbar", 'Getting Treated', Config.ProgressTime, true, false, {
-		disableMovement = true,
-		disableCarMovement = true,
-		disableMouse = true,
-		disableCombat = true,
-	}, {}, {}, {}, function()
-		------ [[ Add custom revive or change event name to your medic revive event name ]] ------
-		TriggerEvent('rsg-medic:clent:playerRevive')
-		RSGCore.Functions.Notify('Healthy Again', 'success')
-	end)
 end
 
 RegisterNetEvent('rsg-npcdoc:client:startTreatmentCheck')

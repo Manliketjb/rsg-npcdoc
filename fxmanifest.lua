@@ -7,6 +7,11 @@ client_scripts {
     'client.lua'
 }
 
+server_scripts {
+    'config.lua',
+    'server.lua'
+}
+
 dependencies {
     'rsg-core',
     'rsg-medic'
